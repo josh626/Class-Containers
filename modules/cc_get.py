@@ -17,6 +17,23 @@ def get_projects():
     except Exception as except_err:
         print("Failed obtaining list of projects: {}".format(except_err))
 
+
+def get_repos(project_id):
+    try:
+        response = requests.get("https://classcontainers.com/api/v2.0/repositories?project_id={}".format(project_id), headers=headers, verify=False)
+        return response.json()
+
+    except Exception as except_err:
+        print("Failed obtaining list of repositories: {}".format(except_err))
+
+def get_resource(resource):
+    try:
+        response = requests.get("https://classcontainers.com/api/v2.0/{}".format(resource), headers=headers, verify=False)
+        return response.json()
+
+    except Exception as except_err:
+        print("Failed obtaining list of {}: {}".format(resource, except_err))
+
 def get_users():
     try:
         response = requests.get("https://classcontainers.com/api/v2.0/users", headers=headers, verify=False)

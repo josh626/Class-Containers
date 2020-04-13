@@ -66,7 +66,7 @@ body {
 }
 </style>
 </head>
-<img src="static/images/logocopy.png">
+<img src="/static/images/logocopy.png">
 <body>
 <div class="navbar">
   <a href="/">Home</a>
@@ -96,12 +96,15 @@ body {
 </div>
 </div>
 
-<h3>Welcome to Class Containers!</h3>
-<p>This is the home page!!</p>
+<h3>Assignments Below:</h3>
+<p>Render MarkDown from README.md here: {{ cc_repo_id }} </p>
+<p>Generate docker pull command here: </p>
 
-
-<h3>This is a test of the template rendering</h3>
-<p>This is rendered value: {{ value1 }}</p>
+<!--
+    {% for cc_repo in cc_repos %}
+    <a href="/repo/{{ cc_repo.id }}">{{ cc_repo.name }}</a>
+    {% endfor %}
+-->
 
 </body>
 </html>
