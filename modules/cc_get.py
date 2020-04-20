@@ -11,7 +11,7 @@ headers = {'Authorization' : 'Basic {}'.format(uname_pass)}
 
 def get_projects():
     try:
-        response = requests.get("https://classcontainers.com/api/v2.0/projects", headers=headers, verify=False)
+        response = requests.get("https://srv-harbor-00.tomchris.net/api/projects", headers=headers, verify=False)
         return response.json()
 
     except Exception as except_err:
@@ -20,7 +20,7 @@ def get_projects():
 
 def get_repos(project_id):
     try:
-        response = requests.get("https://classcontainers.com/api/v2.0/repositories?project_id={}".format(project_id), headers=headers, verify=False)
+        response = requests.get("https://srv-harbor-00.tomchris.net/api/repositories?project_id={}".format(project_id), headers=headers, verify=False)
         return response.json()
 
     except Exception as except_err:
@@ -28,7 +28,7 @@ def get_repos(project_id):
 
 def get_resource(resource):
     try:
-        response = requests.get("https://classcontainers.com/api/v2.0/{}".format(resource), headers=headers, verify=False)
+        response = requests.get("https://srv-harbor-00.tomchris.net/api/{}".format(resource), headers=headers, verify=False)
         return response.json()
 
     except Exception as except_err:
@@ -36,7 +36,7 @@ def get_resource(resource):
 
 def get_users():
     try:
-        response = requests.get("https://classcontainers.com/api/v2.0/users", headers=headers, verify=False)
+        response = requests.get("https://srv-harbor-00.tomchris.net/api/users", headers=headers, verify=False)
         return response.json()
 
     except Exception as except_err:

@@ -8,9 +8,9 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 uname_pass = b64encode(b"admin:Harbor12345").decode("ascii")
 headers = {'Authorization' : 'Basic {}'.format(uname_pass)}
-#response = requests.get("https://classcontainers.com/api/v2.0/users", headers=headers, verify=False)
+#response = requests.get("https://srv-harbor-00.tomchris.net/api/v2.0/users", headers=headers)
 try:
-    response = requests.get("https://classcontainers.com/api/v2.0/users", headers=headers)
+    response = requests.get("https://srv-harbor-00.tomchris.net/api/users", headers=headers)
 
     print("uname_pass: {}".format(uname_pass))
     print("headers: {}".format(headers))
@@ -21,3 +21,4 @@ try:
     print(json.dumps(json_response, indent=2))
 except Exception as except_err:
     print("Your shit broke: {}".format(except_err))
+    print("    response: {}".format(response))
