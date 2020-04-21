@@ -1,135 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {
-  font-family: Arial;
-}
-
-.navbar {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.navbar a {
-  float: left;
-  font-size: 16px;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
-
-.dropdown .dropbtn {
-  font-size: 16px;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
-
-.navbar a:hover, .dropdown:hover .dropbtn {
-  background-color: blue;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  display: block;
-  text-align: left;
-}
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-</style>
-</head>
-<img src="/static/images/logocopy.png">
-<body>
-<div class="navbar">
-  <a href="/">Home</a>
-  <div class="dropdown">
-    <button class="dropbtn">Classes
-      <i class="fa fa-caret-down"></i> <!-- down arror in button -->
-    </button>
-    <div class="dropdown-content">
-      {% for cc_project in cc_projects %}
-      <a href="/project/{{ cc_project.project_id }}">{{ cc_project.name }}</a>
+{% extends "index.html" %}
+{% block content %}
+    <p>This is the assignemnt page for the Class: {{ cc_project_id }} </p>
+    <style>
+      .vertical-menu {
+	width: 200px;
+      }
+      .vertical-menu a {
+	background-color: #333;
+	color: white;
+	display: inherit;
+	padding: 12px;
+	text-decoration: none;
+      }
+      .vertical-menu a:hover {
+	background-color: blue;
+      }
+      .vertical-menu a.active {
+	background-color: #4CAF50;
+	color: white;
+      }
+    </style>
+    <div class="vertical-menu">
+      {% for cc_repo in cc_repos %}
+      <a href="/repo/{{ cc_project_id }}/{{ cc_repo.id }}">{{ cc_repo.name }}</a>
       {% endfor %}
     </div>
-  </div>
-  <div class="dropdown">
-  <button class="dropbtn">Information
-    <i class="fa fa-caret-down"></i>
-  </button>
-  <div class="dropdown-content">
-    <a href="Dockerinfo.html">Docker Info/Install Guide</a>
-    <a href="HowToUseDocker.html">How to use Docker</a>
-    <a href="Container_images.html">Docker Container Images/Docker Hub</a>
-    <a href="L_S_Containers.html">Launching and Stopping containers </a>
-    <a href="AccessCC.html">How to access ClassContainers Docker Registry</a>
-    <a href="resources.html">Resources/Links</a>
-  </div>
-</div>
-</div>
-
-<h3>Welcome to Class Containers!</h3>
-<p>This is the assignemnt page for the Class: {{ cc_project_id }} </p>
-<h4>Assignments Below:</h4>
-
-<!---
-</body>
-<body>
--->
-  <style>
-
-    .vertical-menu {
-      width: 200px;
-    }
-
-    .vertical-menu a {
-      background-color: #333;
-      color: white;
-      display: inherit;
-      padding: 12px;
-      text-decoration: none;
-    }
-
-    .vertical-menu a:hover {
-      background-color: blue;
-    }
-
-    .vertical-menu a.active {
-      background-color: #4CAF50;
-      color: white;
-    }
-  </style>
-  <div class="vertical-menu">
-    {% for cc_repo in cc_repos %}
-    <a href="/repo/{{ cc_repo.id }}">{{ cc_repo.name }}</a>
-    {% endfor %}
-  </div>
-</body>
-</html>
+{% endblock %}
