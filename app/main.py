@@ -3,40 +3,40 @@ from flask import Flask
 from flask import render_template
 from flaskext.markdown import Markdown
 from modules import cc_get # as cc_get
-cc = Flask(__name__)
-Markdown(cc)
+app = Flask(__name__)
+Markdown(app)
 cc_projects = cc_get.get_projects()
 
-@cc.route('/')
+@app.route('/')
 def index():
     return render_template('homepage.html', cc_projects=cc_projects, value1="This is a Rendered Value!!!")
 
 
-@cc.route('/access/')
+@app.route('/access/')
 def access():
     return render_template('AccessCC.html', cc_projects=cc_projects)
 
-@cc.route('/dockerinfo/')
+@app.route('/dockerinfo/')
 def dockerinfo():
     return render_template('dockerinfo.html', cc_projects=cc_projects)
 
-@cc.route('/containerimages/')
+@app.route('/containerimages/')
 def containerimages():
     return render_template('Container_images.html', cc_projects=cc_projects)
 
-@cc.route('/howtousedocker/')
+@app.route('/howtousedocker/')
 def howtousedocker():
     return render_template('HowToUseDocker.html', cc_projects=cc_projects)
 
-@cc.route('/launching/')
+@app.route('/launching/')
 def launching():
     return render_template('L_S_Containers.html', cc_projects=cc_projects)
 
-@cc.route('/resources/')
+@app.route('/resources/')
 def resources():
     return render_template('resources.html', cc_projects=cc_projects)
 
-@cc.route('/project/<project_id>')
+@app.route('/project/<project_id>')
 def show_project(project_id):
     # TODO: add if for project_id empty --> route to '/'
     #       Render child template for list of projects (including any markdown) 
@@ -56,7 +56,7 @@ def show_project(project_id):
                            cc_repos=repos,
                            cc_project_name=project_name,)
 
-@cc.route('/repo/<project_id>/<repo_id>')
+@app.route('/repo/<project_id>/<repo_id>')
 def show_repo(project_id, repo_id):
     repo_id = int(repo_id)
     repo_list = cc_get.get_repos(project_id)
@@ -85,4 +85,4 @@ def show_repo(project_id, repo_id):
     #       assign rendered_repo_child template to content 
 
 if __name__ == '__main__':
-    cc.run(host='0.0.0.0')
+    app.run(host='0.0.0.0')
