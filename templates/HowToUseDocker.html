@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% block content %}
+<h3>How to use Docker!</h3>
+
+<h4>Docker Version</h4>
+<p>
+
+Docker is a terminal/command propmt based application, having expereince with these will help.
+To see if Docker is installed properly you can run <b>"docker --version"</b> which will show which version of docker is installed on the machine!
+</p>
+
+<p>
+Example of output:
+<xmp>
+
+Last login: Thu Apr  2 14:28:37 on ttys001
+MacBook-1:~ JL$ docker --version
+Docker version 19.03.8, build afacb8b
+MacBook-1:~ JL$ 
+
+</xmp>
+</p>
+
+<h4>Hello World Test</h4>
+
+<p>Before we began to use Docker we want to run the hello world test to make sure Docker is working properly! To run the hello world test we use the command <b>"docker run hello-world"</b>, Docker will pull down the hello-world image and run it right on your machine locally</p>
+
+<p>
+Example of output:
+<xmp>
+MacBook-1:~ JL$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+1b930d010525: Pull complete 
+Digest: sha256:f9dfddf63636d84ef479d645ab5885156ae030f611a56f3a7ac7f2fdd86d7e4e
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+MacBook-1:~ JL$ 
+
+</xmp>
+</p>
+
+<h4>Docker Commands!</h4> 
+<p>
+Below is a URL for Docker Commands that are used in the terminal/command prompt! Read through and test them out!
+</p>
+<p>
+<a href="https://docs.docker.com/engine/reference/commandline/docker/" target="_blank">Commands!</a>
+</p>
+
+
+{% endblock %}

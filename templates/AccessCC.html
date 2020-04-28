@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% block content %}
+<h3>How to login into ClassContainers.com image registry!</h3>
+<p>This guide will show how to log into the classcontainers.com registry to be able to pull images for assignments that are posted by professors!</p>
+<p>The docker command we use to login into the registry is <b>"docker login classcontainers.com"</b>. A prompt for your user name and password will appear and once logged in you will be able to pull the images posted by professors!</p>  
+
+<h4>Example of logging into registry: </h4>
+<p>
+
+<xmp>
+MacBook-1:~ JL$ docker login classcontainers.com
+Username: admin
+Password: 
+Login Succeeded
+MacBook-1:~ JL$ 
+</xmp>
+This allows you to have access to the Class Containers docker registry where professors post there images too!
+</p> 
+
+<h4>Examples of pulling docker images with tags! </h4>
+
+<p>
+
+<xmp>
+MacBook-1:~ JL$ docker pull classcontainers.com/test/hello:tag1
+tag1: Pulling from test/hello
+Digest: sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042
+Status: Image is up to date for classcontainers.com/test/hello:tag1
+classcontainers.com/test/hello:tag1
+MacBook-1:~ JL$ 
+MacBook-1:~ JL$ docker run classcontainers.com/test/hello:tag1
+
+Hello from Docker!
+
+</xmp>
+Once you choose the assignment from the assignment list, it will bring you to a page with the assignment description and a list of image tags. A professor can assign multiple images to one assignment depending on what is needed for completion. Using the docker pull image example on the page you need to pull the images specificed in the assignment description with there appropriate tags. Once images are pulled then can be run with the docker run command ashown above!
+</p>
+
+
+{% endblock %}

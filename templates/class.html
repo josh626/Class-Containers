@@ -1,19 +1,22 @@
 {% extends "index.html" %}
 {% block content %}
-    <p>This is the assignemnt page for the Class: {{ cc_project_id }} </p>
+    <h4>This is the assignment page for the Class: {{ cc_project_name }} </h4>
+    <h4> Assignments are listed below: </h4>
     <style>
       .vertical-menu {
 	width: 200px;
       }
       .vertical-menu a {
-	background-color: #333;
+	background-color: #004A70;
 	color: white;
 	display: inherit;
 	padding: 12px;
 	text-decoration: none;
+        text-transform: capitalize;
+        border-top: 1px solid black;
       }
       .vertical-menu a:hover {
-	background-color: blue;
+	background-color: black;
       }
       .vertical-menu a.active {
 	background-color: #4CAF50;

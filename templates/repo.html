@@ -1,11 +1,17 @@
 {% extends "index.html" %}
 {% block content %}
 <h2>{{ cc_repo_name }}</h2>
-<p>Generate docker pull command here: </p>
-<hr>
+<h4> Assignment information </h4>
 <p>{{ cc_repo_description|markdown }}</p>
 <hr>
-
+<h4> Docker Pull Command </h4>
+<p>Docker Pull command format = docker pull URL/{{ cc_repo_name}}:*image tag*
+<p>Docker pull command example: docker pull URL/{{ cc_repo_name}}:{{ cc_repo_tags.0 }}</p>
+<p> Image tags for {{cc_repo_name }}:{% for tag in cc_repo_tags %}
+         {{ tag }}
+    {% endfor %}
+</p>
+<hr>
 <h3>-- DEBUGGING -- </h3>
 <ul>
     <li>cc_repo_labels: {{ cc_repo_labels }}

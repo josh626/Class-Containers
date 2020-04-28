@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% block content %}
+<h3>How to Launch and Stop Containers!</h3>
+<p>This page is to give a example of launching a container image and then stopping once everything needed from image is completed! Always good to stop containers that are running when you no longer need them!</p>
+
+<h4>Ubuntu Example! Launching a image!</h4>
+<p>In this exmaple we will be using a ubuntu image to create a ubuntu server container! I used the "docker run --name Ubuntu1 -it ubuntu bash" which will pull down the lastest ubuntu version, along with naming the container Ubuntu1 and it will automatically prompt with the command prompt for the ubuntu image.</p>
+<p> Example of output:
+<xmp> 
+MacBook-1:~ JL$ docker run --name Ubuntu1 -it ubuntu bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+5bed26d33875: Pull complete 
+f11b29a9c730: Pull complete 
+930bda195c84: Pull complete 
+78bf9a5ad49e: Pull complete 
+Digest: sha256:bec5a2727be7fff3d308193cfde3491f8fba1a2ba392b7546b43a051853a341d
+Status: Downloaded newer image for ubuntu:latest
+root@e926a7821bc4:/# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@e926a7821bc4:/# 
+</xmp>
+Using the "docker ps" command we can see the container is running.
+<xmp>
+MacBook-1:~ JL$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+e926a7821bc4        ubuntu              "bash"              5 minutes ago       Up 3 seconds                            Ubuntu1
+MacBook-1:~ JL$ 
+
+</xmp>
+</p>
+<h4>How to stop the container when finished</h4>
+<p>Once you have finished using the container you can stop it using the "docker stop 'name of container'" command.
+<xmp>
+MacBook-1:~ JL$ docker stop Ubuntu1
+Ubuntu1
+MacBook-1:~ JL$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+</xmp>
+The image we just used is still saved so if you wanted to re launch the container then you just have to use the same run command!
+</p> 
+
+{% endblock %}

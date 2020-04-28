@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 	    body {
 	      font-family: Arial;
@@ -8,7 +10,7 @@
 
 	    .navbar {
 	      overflow: hidden;
-	      background-color: #333;
+	      background-color: #004A70;
 	    }
 
 	    .navbar a {
@@ -37,7 +39,7 @@
 	    }
 
 	    .navbar a:hover, .dropdown:hover .dropbtn {
-	      background-color: blue;
+	      background-color: black;
 	    }
 
 	    .dropdown-content {
@@ -55,6 +57,7 @@
 	      padding: 12px 16px;
 	      display: block;
 	      text-align: left;
+              text-transform: capitalize;
 	    }
 
 	    .dropdown-content a:hover {
@@ -66,7 +69,7 @@
 	    }
 	</style>
     </head>
-    <img src="static/images/logocopy.png">
+    <img src="/static/images/logocopy.png" height="150" width="150">
     <body>
 	<div class="navbar">
 	    <a href="/">Home</a>
@@ -85,12 +88,12 @@
 		    <i class="fa fa-caret-down"></i>
 		</button>
 		<div class="dropdown-content">
-		    <a href="Dockerinfo.html">Docker Info/Install Guide</a>
-		    <a href="HowToUseDocker.html">How to use Docker</a>
-		    <a href="Container_images.html">Docker Container Images/Docker Hub</a>
-		    <a href="L_S_Containers.html">Launching and Stopping containers </a>
-		    <a href="AccessCC.html">How to access ClassContainers Docker Registry</a>
-		    <a href="resources.html">Resources/Links</a>
+		    <a href="/dockerinfo/">Docker Info/Install Guide</a>
+		    <a href="/howtousedocker/">How to use Docker</a>
+		    <a href="/containerimages/">Docker Container Images/Docker Hub</a>
+		    <a href="/launching/">Launching and Stopping containers </a>
+		    <a href="/access/">How to access ClassContainers Docker Registry</a>
+		    <a href="/resources/">Resources/Links</a>
 		</div>
 	    </div>
 	</div>
