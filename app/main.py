@@ -1,65 +1,211 @@
 import json
-from flask import Flask
-from flask import render_template
+import os
+from flask import Flask, request, abort, redirect, Response, url_for, render_template
+from flask_login import LoginManager, UserMixin, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 from modules import cc_get # as cc_get
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SECRET_KEY'] = '33a0f3279e871573d885c9cf7ffbdaa2ca7ce3de2c86dfb8'
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
 Markdown(app)
-cc_projects = cc_get.get_projects()
+
+host = "https://classcontainers.com:8444/api"
+
+
+class User(UserMixin):
+
+    def __init__(self, username, password, id, active=True):
+        self.id = id 
+        self.username = username
+        self.password = password
+        self.active = active
+
+    def is_active(self):
+        return self.active
+
+    def get_auth_token(self):
+        return make_secure_token(self.username , key='secret_key')
+
+    def get_id(self):
+        return self.id
+
+
+class UsersRepository:
+
+    def __init__(self):
+        self.users = dict()
+        self.users_id_dict = dict()
+        self.identifier = 0
+
+#    def new_user():
+
+#       Run Get.validate_user
+    def save_user(self, user):
+        self.users_id_dict.setdefault(user.id, user)
+        self.users.setdefault(user.username, user)
+
+    def get_user(self, username):
+        return self.users.get(username)
+
+    def get_user_by_id(self, userid):
+        return self.users_id_dict.get(userid)
+
+    def next_index(self):
+        self.identifier +=1
+        return self.identifier
+
+users_repository = UsersRepository()
+
+
+@login_manager.request_loader
+def load_user(request):
+    token = request.headers.get('Authorization')
+    if token is None:
+        token = request.args.get('token')
+
+    if token is not None:
+        username,password = token.split(":") # naive token
+        user_entry = User.get(username)
+        if (user_entry is not None):
+            user = User(user_entry[0],user_entry[1])
+            if (user.password == password):
+                return user
+    return None
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return users_repository.get_user_by_id(userid)
 
 @app.route('/')
+@login_required
 def index():
-    return render_template('homepage.html', cc_projects=cc_projects, value1="This is a Rendered Value!!!")
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('homepage.html', cc_projects=get.projects(), value1="This is a Rendered Value!!!")
 
+@app.route("/protected",methods=["GET"])
+@login_required
+def protected():
+    return Response(response="Hello Protected World!", status=200)
+
+
+
+@app.route('/login' , methods=['GET' , 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user_validation = cc_get.Get(host, username, password).validate_user()
+        if user_validation['status_code'] is 200:
+            user_registered = users_repository.get_user(username)
+            if user_registered == None:
+                new_user = User(username , password , users_repository.next_index())
+                users_repository.save_user(new_user)
+                user_registered = users_repository.get_user(username)
+                login_user(user_registered)
+                return redirect(url_for('index'))
+            else:
+                login_user(user_registered)
+                return redirect(url_for('index'))
+        else:
+             return redirect(url_for('login'))
+    else:
+        return render_template('login.html')
+       #return Response('''
+       #    <form action="" method="post">
+       #        <p><input type=text name=username>
+       #        <p><input type=password name=password>
+       #        <p><input type=submit value=Login>
+       #    </form>
+       #''')
 
 @app.route('/access/')
 def access():
-    return render_template('AccessCC.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('AccessCC.html', cc_projects=get.projects())
 
 @app.route('/dockerinfo/')
 def dockerinfo():
-    return render_template('dockerinfo.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('dockerinfo.html', cc_projects=get.projects())
 
 @app.route('/containerimages/')
 def containerimages():
-    return render_template('Container_images.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('Container_images.html', cc_projects=get.projects())
 
 @app.route('/howtousedocker/')
 def howtousedocker():
-    return render_template('HowToUseDocker.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('HowToUseDocker.html', cc_projects=get.projects())
 
 @app.route('/launching/')
 def launching():
-    return render_template('L_S_Containers.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('L_S_Containers.html', cc_projects=get.projects())
 
 @app.route('/resources/')
 def resources():
-    return render_template('resources.html', cc_projects=cc_projects)
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    return render_template('resources.html', cc_projects=get.projects())
 
 @app.route('/project/<project_id>')
+@login_required
 def show_project(project_id):
     # TODO: add if for project_id empty --> route to '/'
     #       Render child template for list of projects (including any markdown) 
     #       assign rendered_project_child template to content 
-    repos = cc_get.get_repos(project_id)
-
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
+    repos = get.repos(project_id)
     project_id = int(project_id)
-    project_list = cc_get.get_projects()
+    project_list = get.projects()
     project_data = {}
     for project in project_list:
         if project['project_id'] is project_id:
             project_data = project
     project_name = project_data['name']
     return render_template('class.html',
-                           cc_projects=cc_projects,
+                           cc_projects=get.projects(),
                            cc_project_id=project_id,
                            cc_repos=repos,
                            cc_project_name=project_name,)
 
 @app.route('/repo/<project_id>/<repo_id>')
+@login_required
 def show_repo(project_id, repo_id):
+    if current_user.is_authenticated:
+        get = cc_get.Get(host, current_user.username, current_user.password) 
+    else:
+        return redirect(url_for('login'))
     repo_id = int(repo_id)
-    repo_list = cc_get.get_repos(project_id)
+    repo_list = get.repos(project_id)
     repo_data = {}
     for repo in repo_list:
         if repo['id'] is repo_id:
@@ -69,9 +215,9 @@ def show_repo(project_id, repo_id):
     repo_name = repo_data['name']
     repo_description = repo_data['description']
     repo_labels = repo_data['labels']
-    repo_tags = cc_get.get_tags(repo_name)
+    repo_tags = get.tags(repo_name)
     return render_template('repo.html',
-                                   cc_projects=cc_projects,
+                                   cc_projects=get.projects(),
                                    cc_repo_name=repo_name,
                                    cc_repo_description=repo_description,
                                    cc_repo_labels=repo_labels,

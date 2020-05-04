@@ -6,53 +6,74 @@ from urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-uname_pass = b64encode(b"admin:Harbor12345").decode("ascii")
-headers = {'Authorization' : 'Basic {}'.format(uname_pass)}
 
-def get_projects():
-    try:
-        response = requests.get("https://srv-harbor-00.tomchris.net/api/projects",
-                                headers=headers, verify=False)
-        return response.json()
+class Get:
+    """ Get Methods. 
+        Usage: get = cc_get.Get(host, uname, password)
+               get.projects()
+        returns response.json()
+    """
+    def __init__(self, host, uname, password):
+        self.host = host
+        uname_pass = "{}:{}".format(uname, password)
+        if type(uname_pass) == str:
+            self.headers = {'Authorization' : 'Basic {}'.format(b64encode(uname_pass.encode('utf-8')).decode("ascii"))}
+        else:
+            self.headers = {'Authorization' : 'Basic {}'.format(b64encode(uname_pass).decode("ascii"))}
 
-    except Exception as except_err:
-        print("Failed obtaining list of projects: {}".format(except_err))
+
+    def resource(self, resource):
+        try:
+            raw_response = requests.get("{}/{}".format(self.host, resource),
+                                    headers=self.headers, verify=False)
+            response = {
+                    "status_code": raw_response.status_code,
+                    "headers": raw_response.headers,
+                    "json": raw_response.json()}
+            return response
+
+        except Exception as except_err:
+            print("Failed requesting {}: {}".format(resource, except_err))
+
+    def validate_user(self):
+        try:
+            response = self.resource("/users/current")
+            return response
+        except Exception as except_err:
+            print("Failure Validating User: {}".format(except_err))
+    
+    def projects(self):
+        try:
+            response = self.resource("/projects")
+            return response['json']
+
+        except Exception as except_err:
+            print("Failed obtaining list of projects: {}".format(except_err))
 
 
-def get_repos(project_id):
-    try:
-        response = requests.get("https://srv-harbor-00.tomchris.net/api/repositories?project_id={}".format(project_id),
-                                headers=headers, verify=False)
-        return response.json()
+    def repos(self, project_id):
+        try:
+            response = self.resource("/repositories?project_id={}".format(project_id))
+            return response['json']
 
-    except Exception as except_err:
-        print("Failed obtaining list of repositories: {}".format(except_err))
+        except Exception as except_err:
+            print("Failed obtaining list of repositories: {}".format(except_err))
 
-def get_tags(repo_name):
-    try:
-        response = requests.get("https://srv-harbor-00.tomchris.net/api/repositories/{}/tags".format(repo_name),
-                                headers=headers, verify=False)
-        tags = []
-        for tag in response.json():
-            tags.append(tag['name'])
-        return tags 
+    def tags(self, repo_name):
+        try:
+            response = self.resource("/repositories/{}/tags".format(repo_name))
+            tags = []
+            for tag in response['json']:
+                tags.append(tag['name'])
+            return tags 
 
-    except Exception as except_err:
-        print("Failed obtaining list of repositories: {}".format(except_err))
+        except Exception as except_err:
+            print("Failed obtaining list of repositories: {}".format(except_err))
 
-def get_resource(resource):
-    try:
-        response = requests.get("https://srv-harbor-00.tomchris.net/api/{}".format(resource),
-                                headers=headers, verify=False)
-        return response.json()
+    def users(self):
+        try:
+            response = self.resource("/users")
+            return response['json']
 
-    except Exception as except_err:
-        print("Failed obtaining list of {}: {}".format(resource, except_err))
-
-def get_users():
-    try:
-        response = requests.get("https://srv-harbor-00.tomchris.net/api/users", headers=headers, verify=False)
-        return response.json()
-
-    except Exception as except_err:
-        print("Failed obtaining list of users: {}".format(except_err))
+        except Exception as except_err:
+            print("Failed obtaining list of users: {}".format(except_err))
