@@ -1,7 +1,8 @@
 import json
 import os
+import requests
 from flask import Flask, request, abort, redirect, Response, url_for, render_template
-from flask_login import LoginManager, UserMixin, login_required, login_user, current_user
+from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 from flaskext.markdown import Markdown
 from modules import cc_get # as cc_get
 app = Flask(__name__)
@@ -94,7 +95,10 @@ def index():
 def protected():
     return Response(response="Hello Protected World!", status=200)
 
-
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 @app.route('/login' , methods=['GET' , 'POST'])
 def login():
@@ -117,13 +121,6 @@ def login():
              return redirect(url_for('login'))
     else:
         return render_template('login.html')
-       #return Response('''
-       #    <form action="" method="post">
-       #        <p><input type=text name=username>
-       #        <p><input type=password name=password>
-       #        <p><input type=submit value=Login>
-       #    </form>
-       #''')
 
 @app.route('/access/')
 def access():
@@ -173,12 +170,47 @@ def resources():
         return redirect(url_for('login'))
     return render_template('resources.html', cc_projects=get.projects())
 
+@app.route('/register' , methods=['GET' , 'POST'])
+def register():
+    # Pass-through user registration to Harbor
+    if request.method == 'POST':
+        print("REGISTER POST!!!")
+        print("request: {}".format(request))
+        print("request.form: {}".format(request.form))
+        username = request.form['username']
+        password = request.form['password']
+        password_repeat = request.form['password-repeat']
+        realname = request.form['realname']
+        email = request.form['email']
+        print("username: {}".format(username))
+        if password != password_repeat:
+            return redirect(url_for('register'))
+        host = "https://classcontainers.com:8444/api/users"
+        headers = {"accept": "application/json", "Content-Type": "application/json"}
+        body = {"username": username, "password": password, "realname": realname, "email": email, "comment": ""}
+        try:
+            raw_response = requests.post(host, headers=headers, json=body)
+            print("raw_response: {}".format(raw_response))
+            print("    status_code: {}".format(raw_response.status_code))
+            print("    json: {}".format(raw_response.json()))
+            if raw_response.status_code not in (200, 201):
+                return redirect(url_for('register'))
+            return redirect(url_for('login'))
+        except Exception as e:
+            print("Failure submitting user registration: {}".format(e))
+            print("raw_response: {}".format(raw_response))
+            print("    status_code: {}".format(raw_response.status_code))
+            return redirect(url_for('login'))
+    else:
+        return render_template('register.html')
+
+
+    
+
 @app.route('/project/<project_id>')
 @login_required
 def show_project(project_id):
     # TODO: add if for project_id empty --> route to '/'
-    #       Render child template for list of projects (including any markdown) 
-    #       assign rendered_project_child template to content 
     if current_user.is_authenticated:
         get = cc_get.Get(host, current_user.username, current_user.password) 
     else:
@@ -225,10 +257,6 @@ def show_repo(project_id, repo_id):
                                    cc_repo_response=repo_json_pretty,
                                    cc_repo_tags=repo_tags
                                    )
-    # TODO: add if for repo empty --> route to '/'
-    #       Get label data
-    #       Render child template using values from repo (markdown, Name, docker pull commands)
-    #       assign rendered_repo_child template to content 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-NAME=cc-login-test
-DOMAIN=app.tomchris.net
+NAME=students
+DOMAIN=classcontainers.com
 CONTAINER_NAME=${NAME}
 IMAGE_NAME=${NAME}
 CONTAINER_ID=$(docker ps -a | awk "/$IMAGE_NAME/"'{ print $1 }')
