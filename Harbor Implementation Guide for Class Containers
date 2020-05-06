@@ -1,0 +1,124 @@
+# Harbor Implementation Guide for Class Containers
+
+Create a VM with Ubuntu 18.04 or newer version
+
+**Install Docker on VM:**
+
+sudo apt update
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+sudo apt update
+
+sudo apt install docker-ce
+
+sudo systemctl status docker
+
+Place user in docker group:
+
+sudo usermod -aG docker ${USER}
+
+Then logout and log back into machine
+
+Confirm user is in group with:
+
+id -nG
+
+
+**Install Docker Compose on VM:**
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose --version
+
+**Retrieve Harbor version 10.2 from harbor github:**
+
+wget https://github.com/goharbor/harbor/archive/v1.10.2.tar.gz
+
+tar -xvzf v1.10.2.tar.gz
+
+**Install Nginx on machine:**
+
+sudo apt-get install nginx
+
+sudo apt-get install build-essential
+
+sudo systemctl stop nginx.service
+
+### Editing Harbor for customization of Class Containers
+
+cd /home/user/harbor/src/portal/src/
+
+Using VIM open index.html and change harbor title name to Class Containers
+
+Using VIM open settings.json file and add Class Containers to name and product title
+
+cd /home/user/harbor/src/portal/src/images
+
+Inside you will find the harborlogo.svg change this file to class containers logo but with the same file name harborlogo.svg
+
+#### Creaitng the proper certifications with Let's Encrypt
+
+Link for Let's Envcrypt ( Have to make sure to get the correcet version for your VM)
+https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+
+If using Ubuntu 18.04 follow steps below:
+
+-sudo apt-get update
+-sudo apt-get install software-properties-common
+-sudo add-apt-repository universe
+-sudo add-apt-repository ppa:certbot/certbot
+-sudo apt-get update
+-sudo apt-get install certbot python-certbot-nginx
+-sudo certbot --nginx
+
+After running above command you have to fill out the domain name and will recieve this output:
+
+Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/classcontainers.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/classcontainers.com/privkey.pem
+
+
+#### Editing the Harbor.yml file
+
+changed hostname to classcontainers.com
+
+change the certficate file paths to the two above paths
+
+uncomment external url and place your hostname
+
+#### Creating the docker domain directory
+
+cd /etc/docker
+
+mkdir certs.d
+
+cd /etc/docker/certs.d
+
+mkdir classcontainers.com
+
+cd /etc/docker/certs.d/classcontainers.com
+
+Link the full chain and priv key to docker:
+
+-sudo ln -s /etc/letsencrypt/live/classcontainers.com/privkey.pem /etc/docker/certs.d/classcontainers.com/server.key
+-sudo ln -s /etc/letsencrypt/live/classcontainers.com/chain.pem /etc/docker/certs.d/classcontainers.com/server.crt
+
+#### Creating the Install File
+
+cd /home/user/harbor/
+
+sudo make install
+
+#### Harbor running!
+
+After the install the 9 harbor containers should be running and healthy. To check you can run the command:
+
+docker ps -a
