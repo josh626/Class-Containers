@@ -41,9 +41,6 @@ class UsersRepository:
         self.users_id_dict = dict()
         self.identifier = 0
 
-#    def new_user():
-
-#       Run Get.validate_user
     def save_user(self, user):
         self.users_id_dict.setdefault(user.id, user)
         self.users.setdefault(user.username, user)
@@ -90,10 +87,6 @@ def index():
         return redirect(url_for('login'))
     return render_template('homepage.html', cc_projects=get.projects(), value1="This is a Rendered Value!!!")
 
-@app.route("/protected",methods=["GET"])
-@login_required
-def protected():
-    return Response(response="Hello Protected World!", status=200)
 
 @app.route('/logout')
 def logout():
